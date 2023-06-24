@@ -16,14 +16,24 @@ public class AuthenticationController {
 
     @PostMapping("auth/register")
     public ResponseObject addUser(@RequestBody Authentication auth) {
-        ResponseObject response = authenticationService.addUser(auth);
+        ResponseObject response = new ResponseObject();
+        try {
+            response = authenticationService.addUser(auth);
+        } catch (Exception e) {
+            response.setStatus("failure");
+        }
         return response;
     }
 
     @PostMapping("auth/login")
     public ResponseObject authenticate(@RequestBody User user) {
-        ResponseObject response;
-        response = authenticationService.authenticate(user);
+        ResponseObject response = new ResponseObject();
+        try {
+            response = authenticationService.authenticate(user);
+        } catch (Exception e) {
+            response.setStatus("failure");
+            response.setMessage("exception occurred");
+        }
         return response;
     }
 

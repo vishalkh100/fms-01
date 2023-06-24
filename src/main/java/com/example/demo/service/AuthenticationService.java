@@ -7,10 +7,12 @@ import com.example.demo.models.User;
 import com.example.demo.models.dto.AuthDTO;
 import com.example.demo.repository.AuthenticationRepository;
 import com.example.demo.repository.UsersRepository;
+import com.example.demo.utilities.EncryptionHelper;
 import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.crypto.SecretKey;
 import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.Optional;
 
@@ -23,7 +25,8 @@ public class AuthenticationService {
     @Autowired
     private UsersRepository usersRepository;
 
-    public ResponseObject addUser(Authentication authentication) {
+    public ResponseObject addUser(Authentication authentication) throws Exception {
+        authentication.setPassword(EncryptionHelper.encrypt(authentication.getPassword()));
         try {
             authenticationRepository.save(authentication);
         } catch (Exception e) {
@@ -33,7 +36,7 @@ public class AuthenticationService {
         return new ResponseObject("success", "user added successfully", "null");
     }
 
-    public ResponseObject authenticate(User user) {
+    public ResponseObject authenticate(User user) throws Exception {
         ResponseObject response = new ResponseObject();
 
         Authentication recAuthObject = authenticationRepository.findByUsername(user.getUsername());
@@ -42,7 +45,8 @@ public class AuthenticationService {
             response.setMessage("user not found");
             response.setToken("null");
         } else {
-            if(recAuthObject.getPassword().equals(user.getPassword())) {
+            String decPassword = EncryptionHelper.decrypt(recAuthObject.getPassword());
+            if(decPassword.equals(user.getPassword())) {
                 response.setStatus("success");
                 response.setMessage("user login successful");
                 response.setToken("Bearer abcd-sample-token-xyz");
