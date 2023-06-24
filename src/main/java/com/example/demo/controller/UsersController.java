@@ -9,12 +9,14 @@ import org.springframework.boot.json.GsonJsonParser;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.format.DateTimeFormatter;
+import java.time.LocalDateTime;
+
 import java.util.List;
 
 @RestController
 public class UsersController {
 
-    GsonJsonParser gsonJsonParser = new GsonJsonParser();
     @Autowired
     UsersService usersService;
 
@@ -35,12 +37,12 @@ public class UsersController {
     }
 
     @DeleteMapping("users/{id}")
-    public String deleteUserById(@PathVariable Integer id) {
+    public Users deleteUserById(@PathVariable Integer id) {
         Users user = null;
         try {
             user = usersService.deleteUser(id);
         } catch (ExceptionResponseException e) {
             System.out.println(e.getMessage());
         }
-        return gsonJsonParser.toString();    }
+        return user;    }
 }

@@ -1,11 +1,10 @@
 package com.example.demo.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import com.example.demo.enums.Gender;
+import jakarta.persistence.*;
 import lombok.Data;
 
+import java.sql.Blob;
 import java.util.Date;
 
 @Entity
@@ -15,13 +14,17 @@ public class Users {
     @GeneratedValue(strategy= GenerationType.IDENTITY)
     private int id;
 
-    private String username;
-    private String password;
     private String email;
     private String city;
     private String contact;
     private Date registerDate;
     private Date dob;
+    private Gender gender;
     private boolean hasInsuarance;
+    private String address;
+    private Blob profilePicture;
+
+    @OneToOne(mappedBy = "user")
+    private Authentication authentication;
 
 }

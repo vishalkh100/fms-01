@@ -8,11 +8,17 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.sql.Date;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
 
 @Service
 public class UsersService {
+
+    DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+    LocalDateTime now = LocalDateTime.now();
 
     @Autowired
     UsersRepository usersRepository;
@@ -34,6 +40,7 @@ public class UsersService {
     }
 
     public Users addNewUser(Users user) {
+        user.setRegisterDate(Date.valueOf(dtf.format(now)));
         return usersRepository.save(user);
     }
 
